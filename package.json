@@ -1,0 +1,24 @@
+{
+  "name": "common-longlist",
+  "version": "0.0.1",
+  "description": "A common component for render long data list.It can use to React vue2.x vue3.x and native.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IchliebedichZhu/common-longList.git"
+  },
+  "keywords": [
+    "longList",
+    "react",
+    "vue"
+  ],
+  "author": "Jerrmy.Yu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IchliebedichZhu/common-longList/issues"
+  },
+  "homepage": "https://github.com/IchliebedichZhu/common-longList#readme"
+}
