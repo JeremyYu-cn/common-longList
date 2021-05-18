@@ -15,10 +15,16 @@
     "react",
     "vue"
   ],
-  "author": "Jerrmy.Yu",
+  "author": "Jeremy.Yu",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/IchliebedichZhu/common-longList/issues"
   },
-  "homepage": "https://github.com/IchliebedichZhu/common-longList#readme"
+  "homepage": "https://github.com/IchliebedichZhu/common-longList#readme",
+  "dependencies": {
+    "typescript": "^4.2.4",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "ts-loader": "^9.1.2",
+    "webpack": "^5.37.0"
+  }
 }
