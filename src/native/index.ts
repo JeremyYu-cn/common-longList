@@ -6,17 +6,35 @@
  */
 import { observeList, } from '../utils/observerList';
 
-function init(targetElementId: string): { el: Element, targetEl: Element, } {
+type LoadFunction<T> = (item: T) => Element
+
+// 当前在页面的对象
+let onShowTarget: Array<Element> = [];
+// 缓存的页面对象
+let cacheShowTarget: Array<Element> = [];
+
+/**
+ * 初始化
+ * @param targetElementId 列表父节点ID
+ * @returns 
+ */
+function init(targetElementId: string): {
+  el: Element,
+  targetEl: Element,
+  beforeEl: Element,
+} {
   const el = document.querySelector(targetElementId);
   if (!el) throw new Error('element is not exists');
-  const span = document.createElement('span');
-  span.className = 'base_el';
+  const after = document.createElement('span');
+  after.className = 'after_el';
 
-  el.appendChild(span);
-  return { el, targetEl: span };
+  const before = document.createElement('span');
+  before.className = 'before_el';
+
+  el.appendChild(before);
+  el.appendChild(after);
+  return { el, targetEl: after, beforeEl: before };
 }
-
-type LoadFunction<T> = (item: T) => Element
 
 /**
  * 加载数据
@@ -41,21 +59,87 @@ function LoadData<T extends Record<string, any>>(data: {
   return ul;
 }
 
+/**
+ * 将数据插入节点
+ * @param observe 
+ * @param el 
+ * @param targetEl 
+ * @param listArr 
+ * @param index 
+ * @param loadFunction 
+ */
+function insertDataToElement<T extends Record<string, any>>(
+  observe: IntersectionObserver,
+  el: Element,
+  targetEl: Element,
+  listArr: Array<T>,
+  index: number,
+  loadFunction: LoadFunction<T>
+) {
+  const fragment = document.createDocumentFragment();
+  const element = LoadData({ listArr, index, loadFunction, })
+  fragment.appendChild(element);
+  el.insertBefore(fragment, targetEl);
+  pushElementToShowArr(el, element, observe);
+  observe.observe(element);
+}
+
+function reLoadDataToElement(
+  el: Element,
+  beforeEl: Element,
+): boolean {
+  if (onShowTarget.length > 5) return false;
+  const fragment = document.createDocumentFragment();
+  const element = cacheShowTarget.shift();
+  console.log(element);
+  
+  if (!element) return false;
+
+  fragment.appendChild(element);
+  console.log(beforeEl.nextSibling);
+  
+  el.insertBefore(fragment, beforeEl.nextSibling);
+  returnElementToShowArr(el, element);
+
+  return true;
+}
+
+function pushElementToShowArr(rootEl: Element, el: Element, observe: IntersectionObserver) {
+  if (onShowTarget.length > 5) {
+    const element = <Element>onShowTarget.shift();
+    observe.unobserve(element)
+    cacheShowTarget.push(element);
+    rootEl.removeChild(element);
+  }
+  onShowTarget.push(el);
+}
+
+function returnElementToShowArr(rootEl: Element,el: Element) {
+  if (onShowTarget.length > 5) {
+    const element = <Element>onShowTarget.pop();
+    rootEl.removeChild(element);
+    onShowTarget.unshift(el);
+  }
+}
+
 export default function loadLongData<T>(
   targetElementId: string,
   listArr: Array<T>,
   loadFunction: LoadFunction<T>
 ) {
     let index = 0;
-    const { el, targetEl, } = init(targetElementId);
-
-    observeList(el, (observe: IntersectionObserver) => {
-      const fragment = document.createDocumentFragment();
-      const element = LoadData({ listArr, index, loadFunction, })
-      fragment.appendChild(element);
-      el.insertBefore(fragment, targetEl);
-      index++;
-      observe.observe(element);
+    const { el, targetEl, beforeEl, } = init(targetElementId);
+    observeList({
+      element: el,
+      onShowTarget,
+      loadFun: (observe: IntersectionObserver) => {
+        insertDataToElement(observe, el, targetEl, listArr, index, loadFunction);
+        index++;
+      },
+      reloadFun: () => {
+        const reloadResult = reLoadDataToElement(el, beforeEl)
+        if (reloadResult) index--;
+      }
     });
 }
 

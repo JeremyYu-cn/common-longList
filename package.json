@@ -4,7 +4,8 @@
   "description": "A common component for render long data list.It can use to React vue2.x vue3.x and native.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "dev:native": "webpack --watch",
+    "test:native": "webpack"
   },
   "repository": {
     "type": "git",
@@ -22,9 +23,10 @@
   },
   "homepage": "https://github.com/IchliebedichZhu/common-longList#readme",
   "dependencies": {
-    "typescript": "^4.2.4",
     "rollup-plugin-typescript2": "^0.30.0",
     "ts-loader": "^9.1.2",
-    "webpack": "^5.37.0"
+    "typescript": "^4.2.4",
+    "webpack": "^5.37.0",
+    "webpack-cli": "^4.7.0"
   }
 }

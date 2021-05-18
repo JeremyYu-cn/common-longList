@@ -14,53 +14,5 @@
     >
     </div>
     <script src="../build/index.js"></script>
-    <script>
-      console.log(window);
-      // (function() {
-      //   let arr = [];
-      //   for(let i = 0; i < 100000; i++) {
-      //     arr.push(`list_${ i }`);
-      //   }
-      //   let limit = 20;
-      //   let index = 0;
-      //   let currentShow = 0;
-      //   function LoadData(target) {
-      //     const fragment = document.createDocumentFragment();
-      //     const start = index * 20;
-      //     const end = (index + 1) * 20;
-      //     const ul = document.createElement('ul');
-      //     const ulId = `ul_${ index }`;
-      //     ul.id = ulId;
-      //     const showArr = arr.slice(start, end);
-      //     showArr.forEach(val => {
-      //       const li = document.createElement('li');
-      //       li.innerHTML = val;
-      //       ul.appendChild(li);
-      //     })
-      //     fragment.appendChild(ul);
-      //     document.querySelector('#div').insertBefore(fragment,document.querySelector('#block'));
-          
-      //     observeList(`#${ ulId }`)
-      //     index++;
-      //   }
-
-      //   function observeList(listId) {
-      //     const observe = new IntersectionObserver((entries, observer) => {
-      //       console.log(entries[0]);
-      //       if (entries[0].isIntersecting) {
-      //         LoadData()
-      //         observe.unobserve(entries[0].target)
-      //       }
-      //     })
-      //     console.log(listId);
-      //     console.log(document.querySelector(listId));
-      //     observe.observe(document.querySelector(listId))
-      //   }
-
-      //   LoadData();
-      //   // LoadData();
-      //   // LoadData();
-      // })()
-    </script>
   </body>
 </html>
