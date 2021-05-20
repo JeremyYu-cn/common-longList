@@ -99,10 +99,12 @@ export default {
           }
         },
         reloadFun: () => {
-          const { currentIndex, maxTarget, onShowList, observer, } = this;
+          const { maxTarget, onShowList, observer, cacheShowTarget, cacheShowList, } = this;
           if (onShowList.length < maxTarget) return;
           
           this.onShowList.pop();
+          this.onShowList.unshift();
+
           const cancelTarget = this.onShowElement.pop();
           observer.unobserve(cancelTarget);
 
