@@ -22,7 +22,7 @@ export default {
   },
   created() {
     let arr = [];
-    for(let i = 0; i < 1000; i++) {
+    for(let i = 0; i < 100000; i++) {
       arr.push({ value: `list_${ i }`, });
     }
     this.list = arr;

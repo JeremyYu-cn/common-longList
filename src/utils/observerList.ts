@@ -27,13 +27,10 @@ export function observeList(data: IObserverOption): IntersectionObserver {
   }
   
   const observe = new IntersectionObserver((entries) => {
-    
-    console.log(onShowTarget);
-    console.log(entries[0].target);
     const isRootEl = entries[0].target === element;
     const isCurrentEl = isRootEl || entries[0].target === onShowTarget[ onShowTarget.length - 1 ];
     const isPrevEl = entries[0].target === onShowTarget[ onShowTarget.length - 2 ];
-
+    
     if (entries[0].isIntersecting && isCurrentEl) {
       loadFun(observe);
     } else if (!entries[0].isIntersecting && isPrevEl){

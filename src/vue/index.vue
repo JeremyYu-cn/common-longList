@@ -4,14 +4,14 @@
     style="height: 200px; width: 300px; background: #f1f1f1; overflow-y: scroll;"
   >
     <div
-      :class="'long_list_' + index"
-      v-for="(item, index) in onShowList"
-      :key="index"
-      :ref="'long_list_' + index"
+      :class="'long_list_' + item.id"
+      v-for="item in onShowList"
+      :key="item.id"
+      :ref="'long_list_' + item.id"
     >
       <div
-        :class="'long_list_split_' + index + '_' + splitIndex"
-        v-for="(split, splitIndex) in item"
+        :class="'long_list_split_' + item.id + '_' + splitIndex"
+        v-for="(split, splitIndex) in item.children"
         :key="splitIndex"
       >
         <slot :item="split" />
@@ -70,10 +70,10 @@ export default {
     loadData() {
       const { limit, list, currentIndex, } = this;
       const start = currentIndex * limit;
-      const end = limit;
-      const showArr = list.splice(start, end);
+      const end = (currentIndex + 1) * limit;
+      const showArr = list.slice(start, end);
       if (!showArr.length) return;
-      this.onShowList.push(showArr);
+      this.onShowList.push({ id: currentIndex, children: showArr });
       this.currentIndex++;
     },
     handleObserver() {
@@ -81,32 +81,43 @@ export default {
         element: '#long_list_box',
         onShowTarget: this.onShowElement,
         loadFun: async () => {
-          const { currentIndex, maxTarget, onShowList, observer, } = this;
-          if (onShowList.length >= maxTarget) {
+          const { maxTarget, onShowList, observer, } = this;
+
+          this.loadData();
+
+          await this.$nextTick();
+
+          if (onShowList.length > maxTarget) {
             const cancelList = this.onShowList.shift();
             const cancelTarget = this.onShowElement.shift();
             observer.unobserve(cancelTarget);
             this.cacheShowTarget.push(cancelTarget);
-            this.cancelList.push(cancelList);
+            this.cacheShowList.push(cancelList);
           }
 
-          this.loadData();
           await this.$nextTick();
-          if (this.$refs[`long_list_${ currentIndex }`]) {
-            const target = this.$refs[`long_list_${ currentIndex }`][0];
+          if (this.$refs[`long_list_${ this.currentIndex - 1 }`]) {
+            const target = this.$refs[`long_list_${ this.currentIndex - 1 }`][0];
             this.onShowElement.push(target);
             this.observer.observe(target);
           }
         },
-        reloadFun: () => {
+        reloadFun: async () => {
           const { maxTarget, onShowList, observer, cacheShowTarget, cacheShowList, } = this;
           if (onShowList.length < maxTarget) return;
+
+          if (!cacheShowTarget.length && !cacheShowList.length) return;
           
           this.onShowList.pop();
-          this.onShowList.unshift();
+          this.onShowList.unshift(cacheShowList.pop());
+          const showElement = cacheShowTarget.pop();
+          this.onShowElement.unshift(showElement);
+
+          await this.$nextTick();
 
           const cancelTarget = this.onShowElement.pop();
           observer.unobserve(cancelTarget);
+          observer.observe(showElement);
 
           this.currentIndex--;
         },
