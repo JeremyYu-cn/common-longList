@@ -21,6 +21,12 @@
 </template>
 
 <script>
+/**
+ * 基于VUE实现长列表加载
+ * date: 2021-05-20
+ * update: 2021-05-20
+ * author Jeremy.Yu
+ */
 import { observeList } from '../utils/observerList.ts';
 
 export default {
@@ -62,7 +68,6 @@ export default {
   },
 
   mounted() {
-    // const { maxTarget, onShowTarget, } = this
     this.handleObserver();
   },
 
@@ -107,7 +112,7 @@ export default {
           if (onShowList.length < maxTarget) return;
 
           if (!cacheShowTarget.length && !cacheShowList.length) return;
-          
+
           this.onShowList.pop();
           this.onShowList.unshift(cacheShowList.pop());
           const showElement = cacheShowTarget.pop();
