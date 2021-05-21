@@ -1,7 +1,7 @@
 <template>
   <div
     id="long_list_box"
-    style="height: 200px; width: 300px; background: #f1f1f1; overflow-y: scroll;"
+    class="long_list_box"
   >
     <div
       :class="'long_list_' + item.id"
@@ -43,6 +43,10 @@ export default {
     maxTarget: {
       type: Number,
       default: 5,
+    },
+    getNext: {
+      type: Function,
+      default: () => {},
     }
   },
   data() {
@@ -114,15 +118,20 @@ export default {
           if (!cacheShowTarget.length && !cacheShowList.length) return;
 
           this.onShowList.pop();
-          this.onShowList.unshift(cacheShowList.pop());
+          const cacheList = cacheShowList.pop(); 
+          this.onShowList.unshift(cacheList);
           const showElement = cacheShowTarget.pop();
-          this.onShowElement.unshift(showElement);
 
           await this.$nextTick();
 
           const cancelTarget = this.onShowElement.pop();
           observer.unobserve(cancelTarget);
-          observer.observe(showElement);
+
+          if (this.$refs[`long_list_${ cacheList.id }`]) {
+            const target = this.$refs[`long_list_${ cacheList.id }`][0];
+            this.onShowElement.unshift(target);
+            observer.observe(target);
+          }
 
           this.currentIndex--;
         },
@@ -134,5 +143,10 @@ export default {
 </script>
 
 <style scoped>
-
+.long_list_box {
+  overflow-y: scroll;
+  width: 300px;
+  height: 200px;
+  background: #f1f1f1;
+}
 </style>
