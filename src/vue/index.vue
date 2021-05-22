@@ -81,9 +81,10 @@ export default {
       const start = currentIndex * limit;
       const end = (currentIndex + 1) * limit;
       const showArr = list.slice(start, end);
-      if (!showArr.length) return;
+      if (!showArr.length) return false;
       this.onShowList.push({ id: currentIndex, children: showArr });
       this.currentIndex++;
+      return true;
     },
     handleObserver() {
       this.observer = observeList({
@@ -92,7 +93,9 @@ export default {
         loadFun: async () => {
           const { maxTarget, onShowList, observer, } = this;
 
-          this.loadData();
+          const pushResult = this.loadData();
+
+          if (!pushResult) return;
 
           await this.$nextTick();
 
@@ -132,7 +135,6 @@ export default {
             this.onShowElement.unshift(target);
             observer.observe(target);
           }
-
           this.currentIndex--;
         },
       })

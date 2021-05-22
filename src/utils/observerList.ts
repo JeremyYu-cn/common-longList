@@ -27,7 +27,6 @@ export function observeList(data: IObserverOption): IntersectionObserver {
   }
   
   const observe = new IntersectionObserver((entries) => {
-    console.log(entries[0].target);
     
     const isRootEl = entries[0].target === element;
     const isCurrentEl = isRootEl || entries[0].target === onShowTarget[ onShowTarget.length - 1 ];
