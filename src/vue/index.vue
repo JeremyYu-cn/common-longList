@@ -81,8 +81,11 @@ export default {
       const start = currentIndex * limit;
       const end = (currentIndex + 1) * limit;
       const showArr = list.slice(start, end);
-      if (!showArr.length) return false;
-      this.onShowList.push({ id: currentIndex, children: showArr });
+
+      if (!showArr.length) {
+        return false;
+      }
+      this.onShowList.push({ id: this.currentIndex, children: showArr });
       this.currentIndex++;
       return true;
     },
@@ -113,6 +116,7 @@ export default {
             this.onShowElement.push(target);
             this.observer.observe(target);
           }
+          console.log(this.onShowElement);
         },
         reloadFun: async () => {
           const { maxTarget, onShowList, observer, cacheShowTarget, cacheShowList, } = this;
@@ -135,6 +139,7 @@ export default {
             this.onShowElement.unshift(target);
             observer.observe(target);
           }
+          
           this.currentIndex--;
         },
       })

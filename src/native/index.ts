@@ -179,13 +179,14 @@ interface ILoadLongDataOption<T> {
   pageNum?: number
 }
 export default function loadLongData<T>(data: ILoadLongDataOption<T>) {
-    const { targetElementId, listArr, loadFunction, getNext, limit, pageNum } = data;
+    const { targetElementId, listArr, loadFunction, getNext, limit, pageNum = 5 } = data;
     let index = 0;
     const { el, targetEl, beforeEl, } = init(targetElementId);
     let arr = listArr;
     observeList({
       element: el,
       onShowTarget,
+      maxContainerNum: pageNum,
       loadFun: async (observe: IntersectionObserver) => {
         if (getNext && typeof getNext === 'function') {
           const nextList = await getNext();
